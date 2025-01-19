@@ -34,7 +34,8 @@ services:
             - PGID=1000
             - BASE_URL=https://scrobbler.alemax.dev.br
         volumes:
-            - ./scrobbler/config:/config
+            - /media/archive/scrobbler/config:/config
+            - ./src/scrobbler/config/config.json:/config/config.json
         ports:
             - 9078:9078
         restart: unless-stopped
