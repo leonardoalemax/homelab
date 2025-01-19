@@ -77,7 +77,3 @@ services:
             - /media/archive/torrents/data:/data
             - /media/archive/downloads:/downloads:rw
             - /media/archive/torrents/incomplete:/incomplete
-
-
-
-	docker run -e PUID=1000 -e PGID=1001 -p 42010:42010 -v $PWD/malojadata:/mljdata -e MALOJA_DATA_DIRECTORY=/mljdata krateng/maloja
