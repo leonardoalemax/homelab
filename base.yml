@@ -39,6 +39,7 @@ services:
         restart: always
         volumes:
             - /media/archive/gitea:/data
+            - ./src/gitea/app.ini:/data/conf/app.ini
             - /etc/timezone:/etc/timezone:ro
             - /etc/localtime:/etc/localtime:ro
         ports:
@@ -46,6 +47,18 @@ services:
             - 222:22
         depends_on:
             - giteadb
+    gitearunner:
+      image: gitea/act_runner
+      container_name: almx-gitea-runner
+      restart: always
+      depends_on:
+        - gitea
+      volumes:
+        - /media/archive/gitea-runner:/data
+        - /var/run/docker.sock:/var/run/docker.sock
+      environment:
+        - GITEA_INSTANCE_URL=https://gitea.alemax.dev.br
+        - GITEA_RUNNER_REGISTRATION_TOKEN=TAN1mHZeWyAhkvtpHQRlMs7Sn9523RNq57YQUx84
     giteadb:
         image: docker.io/library/postgres:14
         container_name: almx-gitea-db
