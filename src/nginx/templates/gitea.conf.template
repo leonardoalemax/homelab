@@ -1,0 +1,22 @@
+server{
+    listen 80;
+    server_name gitea.${SERVER_DOMAIN};
+
+    access_log /dev/stdout proxy;
+    error_log stderr;
+
+    client_max_body_size 500M;
+    underscores_in_headers on;
+
+    location / {
+
+      client_max_body_size 512M;
+      proxy_pass http://${SERVER_LOCAL_IP}:3040;
+      proxy_set_header Connection $http_connection;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

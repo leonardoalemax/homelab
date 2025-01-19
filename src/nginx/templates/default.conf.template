@@ -1,0 +1,11 @@
+server {
+    listen 80 default_server;
+    server_name _;
+
+    access_log /dev/stdout proxy;
+    error_log stderr;
+
+    location /health {
+        return 200 "healthy";
+    }
+}

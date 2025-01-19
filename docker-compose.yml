@@ -1,0 +1,105 @@
+version: "3.8"
+name: base
+
+services:
+    proxy:
+        container_name: almx-nginx-proxy-server
+        image: nginx:latest
+        restart: unless-stopped
+        environment:
+            SERVER_DOMAIN: alemax.dev.br
+            SERVER_LOCAL_IP: 192.168.0.144
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ./src/nginx/templates:/etc/nginx/templates
+            - ./src/nginx/log.conf:/etc/nginx/log.conf
+            - ./src/nginx/nginx.conf:/etc/nginx/nginx.conf
+    portainer:   
+        container_name: almx-portainer
+        image: portainer/portainer-ce:latest
+        ports:
+            - 9443:9443
+        volumes:
+            - bonsai:/data
+            - /var/run/docker.sock:/var/run/docker.sock
+        restart: unless-stopped
+    jellyfin:
+        image: lscr.io/linuxserver/jellyfin:latest
+        container_name: almx-jellyfin
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Etc/UTC
+        volumes:
+            - /media/archive/jellyfin/library:/config
+            - /media/archive/jellyfin/tvseries:/data/tvshows
+            - /media/archive/jellyfin/movies:/data/movies
+            - /media/archive/jellyfin/music:/data/music
+        ports:
+            - 8096:8096
+            - 8920:8920
+            - 7359:7359/udp
+            - 1900:1900/udp
+        restart: unless-stopped
+    filebrowser:
+      container_name: almx-filebrowser
+      image: hurlenko/filebrowser
+      user: "${UID}:${GID}"
+      ports:
+        - 4430:8080
+      volumes:
+        - /media/archive:/data
+        - /media/archive/filebrowser:/config
+      environment:
+        - FB_BASEURL=/filebrowser
+      restart: always
+    qbittorrent:
+        container_name: almx-qbittorrent
+        image: linuxserver/qbittorrent:latest
+        restart: unless-stopped
+        environment:
+            - TZ=America/Sao_Paulo
+        ports:
+            - 8090:8080
+            - 6881:6881/tcp
+            - 6881:6881/udp
+        volumes:
+            - /media/archive/torrents/config:/config
+            - /media/archive/torrents/data:/data
+            - /media/archive/downloads:/downloads:rw
+            - /media/archive/torrents/incomplete:/incomplete
+    gitea:
+        image: docker.io/gitea/gitea:1.23.1
+        container_name: almx-gitea
+        environment:
+          - USER_UID=1000
+          - USER_GID=1000
+          - GITEA__database__DB_TYPE=postgres
+          - GITEA__database__HOST=giteadb:5432
+          - GITEA__database__NAME=gitea
+          - GITEA__database__USER=gitea
+          - GITEA__database__PASSWD=gitea
+        restart: always
+        volumes:
+          - /media/archive/gitea:/data
+          - /etc/timezone:/etc/timezone:ro
+          - /etc/localtime:/etc/localtime:ro
+        ports:
+          - 3040:3000
+          - 222:22
+        depends_on:
+          - giteadb
+    giteadb:
+     image: docker.io/library/postgres:14
+     container_name: almx-gitea-db
+     restart: always
+     environment:
+       - POSTGRES_USER=gitea
+       - POSTGRES_PASSWORD=gitea
+       - POSTGRES_DB=gitea
+     volumes:
+       - /media/archive/gitea-db:/var/lib/postgresql/data
+volumes:
+    bonsai:
