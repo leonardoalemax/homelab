@@ -22,7 +22,7 @@ services:
         ports:
             - 9443:9443
         volumes:
-            - bonsai:/data
+            - /media/archive/portainer:/data
             - /var/run/docker.sock:/var/run/docker.sock
         restart: unless-stopped
     gitea:
