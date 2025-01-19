@@ -44,9 +44,9 @@ services:
         environment:
             - MALOJA_DATA_DIRECTORY=/mljdata
             - PUID=1000
-            - PGID=1001
+            - PGID=1000
         volumes:
-            - /media/archive/malojadata:/mljdata
+            - /media/archive/malojadata:/mljdata:rw
         ports:
             - 42010:42010
         restart: unless-stopped
