@@ -1,0 +1,49 @@
+version: "3.8"
+name: apps
+
+services:
+    jellyfin:
+        image: lscr.io/linuxserver/jellyfin:latest
+        container_name: almx-jellyfin
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Etc/UTC
+        volumes:
+            - /media/archive/jellyfin/library:/config
+            - /media/archive/jellyfin/tvseries:/data/tvshows
+            - /media/archive/jellyfin/movies:/data/movies
+            - /media/archive/jellyfin/music:/data/music
+        ports:
+            - 8096:8096
+            - 8920:8920
+            - 7359:7359/udp
+            - 1900:1900/udp
+        restart: unless-stopped
+    filebrowser:
+        container_name: almx-filebrowser
+        image: hurlenko/filebrowser
+        user: "${UID}:${GID}"
+        ports:
+            - 4430:8080
+        volumes:
+            - /media/archive:/data
+            - /media/archive/filebrowser:/config
+        environment:
+            - FB_BASEURL=/filebrowser
+        restart: always
+    qbittorrent:
+        container_name: almx-qbittorrent
+        image: linuxserver/qbittorrent:latest
+        restart: unless-stopped
+        environment:
+            - TZ=America/Sao_Paulo
+        ports:
+            - 8090:8080
+            - 6881:6881/tcp
+            - 6881:6881/udp
+        volumes:
+            - /media/archive/torrents/config:/config
+            - /media/archive/torrents/data:/data
+            - /media/archive/downloads:/downloads:rw
+            - /media/archive/torrents/incomplete:/incomplete
