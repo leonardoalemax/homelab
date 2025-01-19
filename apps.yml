@@ -32,7 +32,7 @@ services:
             # - MALOJA_API_KEY=
             - PUID=1000
             - PGID=1000
-            BASE_URL=https://scrobbler.alemax.dev.br
+            - BASE_URL=https://scrobbler.alemax.dev.br
         volumes:
             - /media/archive/scrobbler/config:/config
         ports:
