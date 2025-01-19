@@ -1,0 +1,14 @@
+{
+  "sources": [
+    {
+      "type": "jellyfin",
+      "name": "alemax",
+      "data": {
+        "url": "https://jellyfin.alemax.dev.br",
+        "user": "alemax",
+        "apiKey": "7fd626f2158a42fa9a0ddbc4cc167aaa",
+        "usersAllow": ["alemax"]
+      }
+    }
+  ]
+}

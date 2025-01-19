@@ -1,0 +1,103 @@
+[2025-01-19 13:00:39.389 -0300] INFO   : [App] [API] Server started:
+---> Local          http://localhost:9078
+---> Network        http://172.19.0.6:9078
+---> Network (IPv6) http://[::1]:9078
+--- HINT ---
+MS is likely being run in a container with BRIDGE networking which means the above addresses are not accessible from outside this container.
+To ensure the container is accessible make sure you have mapped the *container* port 9078 to a *host* port. https://foxxmd.github.io/multi-scrobbler/docs/installation#networking
+The container will then be accessible at http://HOST_MACHINE_IP:HOST_PORT (or https://scrobbler.alemax.dev.br/ since you defined this!)
+--- HINT ---
+[2025-01-19 13:00:39.390 -0300] INFO   : [App] [API] User-defined base URL for UI and redirect URLs (spotify, deezer, lastfm): https://scrobbler.alemax.dev.br/
+[2025-01-19 13:00:39.412 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Client Added
+[2025-01-19 13:00:39.558 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Communication test succeeded.
+[2025-01-19 13:00:39.559 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Maloja Server Version: 3.2.3
+[2025-01-19 13:00:39.781 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Auth test passed!
+[2025-01-19 13:00:39.782 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Fully Initialized!
+[2025-01-19 13:00:39.918 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Should be processing scrobbles! Attempting to restart scrobbling...
+    label: "Heartbeat"
+[2025-01-19 13:00:39.922 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Scrobble processing started
+[2025-01-19 13:00:39.926 -0300] INFO   : [App] [Heartbeat] [Clients] Attempted to start 1 clients that were not processing scrobbles.
+[2025-01-19 13:00:41.428 -0300] INFO   : [App] Scheduler started.
+[2025-01-19 13:03:36.800 -0300] INFO   : [App] [API] Server started:
+---> Local          http://localhost:9078
+---> Network        http://172.19.0.6:9078
+---> Network (IPv6) http://[::1]:9078
+--- HINT ---
+MS is likely being run in a container with BRIDGE networking which means the above addresses are not accessible from outside this container.
+To ensure the container is accessible make sure you have mapped the *container* port 9078 to a *host* port. https://foxxmd.github.io/multi-scrobbler/docs/installation#networking
+The container will then be accessible at http://HOST_MACHINE_IP:HOST_PORT (or https://scrobbler.alemax.dev.br/ since you defined this!)
+--- HINT ---
+[2025-01-19 13:03:36.801 -0300] INFO   : [App] [API] User-defined base URL for UI and redirect URLs (spotify, deezer, lastfm): https://scrobbler.alemax.dev.br/
+[2025-01-19 13:03:36.821 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Client Added
+[2025-01-19 13:03:37.008 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Communication test succeeded.
+[2025-01-19 13:03:37.010 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Maloja Server Version: 3.2.3
+[2025-01-19 13:03:37.248 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Auth test passed!
+[2025-01-19 13:03:37.249 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Fully Initialized!
+[2025-01-19 13:03:37.365 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Should be processing scrobbles! Attempting to restart scrobbling...
+    label: "Heartbeat"
+[2025-01-19 13:03:37.367 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Scrobble processing started
+[2025-01-19 13:03:37.369 -0300] INFO   : [App] [Heartbeat] [Clients] Attempted to start 1 clients that were not processing scrobbles.
+[2025-01-19 13:03:38.836 -0300] INFO   : [App] Scheduler started.
+[2025-01-19 13:04:31.176 -0300] INFO   : [App] [API] Server started:
+---> Local          http://localhost:9078
+---> Network        http://172.19.0.6:9078
+---> Network (IPv6) http://[::1]:9078
+--- HINT ---
+MS is likely being run in a container with BRIDGE networking which means the above addresses are not accessible from outside this container.
+To ensure the container is accessible make sure you have mapped the *container* port 9078 to a *host* port. https://foxxmd.github.io/multi-scrobbler/docs/installation#networking
+The container will then be accessible at http://HOST_MACHINE_IP:HOST_PORT (or https://scrobbler.alemax.dev.br/ since you defined this!)
+--- HINT ---
+[2025-01-19 13:04:31.177 -0300] INFO   : [App] [API] User-defined base URL for UI and redirect URLs (spotify, deezer, lastfm): https://scrobbler.alemax.dev.br/
+[2025-01-19 13:04:31.193 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Client Added
+[2025-01-19 13:04:31.364 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Communication test succeeded.
+[2025-01-19 13:04:31.365 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Maloja Server Version: 3.2.3
+[2025-01-19 13:04:31.599 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Auth test passed!
+[2025-01-19 13:04:31.601 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Fully Initialized!
+[2025-01-19 13:04:31.714 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Should be processing scrobbles! Attempting to restart scrobbling...
+    label: "Heartbeat"
+[2025-01-19 13:04:31.717 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Scrobble processing started
+[2025-01-19 13:04:31.720 -0300] INFO   : [App] [Heartbeat] [Clients] Attempted to start 1 clients that were not processing scrobbles.
+[2025-01-19 13:04:33.208 -0300] INFO   : [App] Scheduler started.
+[2025-01-19 13:05:09.392 -0300] INFO   : [App] [API] Server started:
+---> Local          http://localhost:9078
+---> Network        http://172.19.0.6:9078
+---> Network (IPv6) http://[::1]:9078
+--- HINT ---
+MS is likely being run in a container with BRIDGE networking which means the above addresses are not accessible from outside this container.
+To ensure the container is accessible make sure you have mapped the *container* port 9078 to a *host* port. https://foxxmd.github.io/multi-scrobbler/docs/installation#networking
+The container will then be accessible at http://HOST_MACHINE_IP:HOST_PORT (or https://scrobbler.alemax.dev.br/ since you defined this!)
+--- HINT ---
+[2025-01-19 13:05:09.393 -0300] INFO   : [App] [API] User-defined base URL for UI and redirect URLs (spotify, deezer, lastfm): https://scrobbler.alemax.dev.br/
+[2025-01-19 13:05:09.443 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Client Added
+[2025-01-19 13:05:09.680 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Communication test succeeded.
+[2025-01-19 13:05:09.681 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Maloja Server Version: 3.2.3
+[2025-01-19 13:05:09.895 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Auth test passed!
+[2025-01-19 13:05:09.897 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Fully Initialized!
+[2025-01-19 13:05:10.000 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Should be processing scrobbles! Attempting to restart scrobbling...
+    label: "Heartbeat"
+[2025-01-19 13:05:10.003 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Scrobble processing started
+[2025-01-19 13:05:10.006 -0300] INFO   : [App] [Heartbeat] [Clients] Attempted to start 1 clients that were not processing scrobbles.
+[2025-01-19 13:05:11.542 -0300] INFO   : [App] Scheduler started.
+[2025-01-19 13:05:16.725 -0300] INFO   : [App] [Sources] [Jellyfin - alemax] Authenticated with API Key on behalf of user alemax
+[2025-01-19 13:05:16.727 -0300] INFO   : [App] [Sources] [Jellyfin - alemax] Fully Initialized!
+[2025-01-19 13:05:16.728 -0300] INFO   : [App] [Sources] [Jellyfin - alemax] Should be polling, attempting to start polling...
+    label: "Heartbeat"
+[2025-01-19 13:05:16.735 -0300] INFO   : [App] [Heartbeat] [Sources] Attempted to start 1 sources.
+[2025-01-19 13:05:16.830 -0300] INFO   : [App] [Sources] [Jellyfin - alemax] Polling started
+[2025-01-19 13:09:03.167 -0300] INFO   : [App] [Sources] [Jellyfin - alemax] Discovered => Kendrick Lamar - Father Time @ 2025-01-19T13:05:27-03:00 (S)
+[2025-01-19 13:09:04.345 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Scrobbled (Backlog)     => (Jellyfin) Kendrick Lamar - Father Time @ 2025-01-19T13:05:27-03:00 (S)
+[2025-01-19 13:10:46.613 -0300] INFO   : [App] [Sources] [Jellyfin - alemax] Discovered => Kendrick Lamar - Rich (Interlude) @ 2025-01-19T13:09:03-03:00 (S)
+[2025-01-19 13:10:48.663 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Scrobbled (Backlog)     => (Jellyfin) Kendrick Lamar - Rich (Interlude) @ 2025-01-19T13:09:03-03:00 (S)
+[2025-01-19 13:13:03.699 -0300] INFO   : [App] [API] Server started:
+---> Local          http://localhost:9078
+---> Network        http://172.19.0.6:9078
+---> Network (IPv6) http://[::1]:9078
+--- HINT ---
+MS is likely being run in a container with BRIDGE networking which means the above addresses are not accessible from outside this container.
+To ensure the container is accessible make sure you have mapped the *container* port 9078 to a *host* port. https://foxxmd.github.io/multi-scrobbler/docs/installation#networking
+The container will then be accessible at http://HOST_MACHINE_IP:HOST_PORT (or https://scrobbler.alemax.dev.br/ since you defined this!)
+--- HINT ---
+[2025-01-19 13:13:03.700 -0300] INFO   : [App] [API] User-defined base URL for UI and redirect URLs (spotify, deezer, lastfm): https://scrobbler.alemax.dev.br/
+[2025-01-19 13:13:03.749 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Client Added
+[2025-01-19 13:13:03.999 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Communication test succeeded.
+[2025-01-19 13:13:04.000 -0300] INFO   : [App] [Scrobblers] [Maloja - unnamed-mlj] Maloja Server Version: 3.2.3
