@@ -1,0 +1,48 @@
+version: "3.8"
+name: outline
+
+services:
+  outline:
+    image: docker.getoutline.com/outlinewiki/outline:latest
+    container_name: almx-outline
+    env_file: ./outline.env
+    ports:
+      - 3000:3000
+    volumes:
+      - /media/archive/outline/data:/var/lib/outline/data
+    depends_on:
+      - outline-postgres
+      - outline-redis
+  outline-redis:
+    image: redis
+    container_name: almx-outline-redis
+    env_file: ./outline.env
+    ports:
+      - 6379:6379
+    volumes:
+      -  /media/archive/outline/redis.conf:/redis.conf
+    command: ["redis-server", "/redis.conf"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 3
+    user: "redis:redis"
+  outline-postgres:
+    image: postgres
+    container_name: almx-outline-postgres
+    env_file: ./outline.env
+    ports:
+      - 5433:5432
+    volumes:
+      - /media/archive/outline/db/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=JEGBEK2eVg4KUGh2MXcbV3K7
+      - POSTGRES_DB=outline
+      - user=postgres:postgres

@@ -20,6 +20,23 @@ services:
             - 7359:7359/udp
             - 1900:1900/udp
         restart: unless-stopped
+    rdtclient:
+        image: rogerfar/rdtclient
+        container_name: almx-rdtclient
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Europe/London
+        volumes:
+            - /media/archive/rdt/db:/data/db
+            - /media/archive/rdt/downloads:/data/downloads
+        logging:
+            driver: json-file
+            options:
+                max-size: 10m
+        ports:
+            - 6500:6500
+        restart: unless-stopped
     scrobbler:
         image: foxxmd/multi-scrobbler
         container_name: almx-scrobbler
@@ -80,43 +97,3 @@ services:
             - /media/archive/torrents/data:/data
             - /media/archive/downloads:/downloads:rw
             - /media/archive/torrents/incomplete:/incomplete
-    outline:
-        image: docker.getoutline.com/outlinewiki/outline:latest
-        container_name: almx-outline
-        ports:
-            - "4343:3000"
-        volumes:
-            - /media/archive/outline-data:/var/lib/outline/data
-        depends_on:
-            - postgres
-            - outlineredis
-    outlineredis:
-        image: redis
-        env_file: ./outline.env
-        container_name: almx-outline-redis
-        ports:
-            - "6379:6379"
-        volumes:
-            - ./redis.conf:/redis.conf
-        command: ["redis-server", "/redis.conf"]
-        healthcheck:
-        test: ["CMD", "redis-cli", "ping"]
-        interval: 10s
-        timeout: 30s
-        retries: 3
-   outlinepostgres:
-        image: postgres
-        container_name: almx-outline-postgres
-        ports:
-            - "5432:5432"
-        volumes:
-            - /media/archive/outline-database-data:/var/lib/postgresql/data
-        healthcheck:
-        test: ["CMD", "pg_isready", "-d", "outline", "-U", "user"]
-        interval: 30s
-        timeout: 20s
-        retries: 3
-        environment:
-            POSTGRES_USER: 'user'
-            POSTGRES_PASSWORD: 'pass'
-            POSTGRES_DB: 'outline'
