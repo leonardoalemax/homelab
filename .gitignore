@@ -1,1 +1,3 @@
 scrobbler/config/logs/*
+samba/cache/*
+samba/lib/*
