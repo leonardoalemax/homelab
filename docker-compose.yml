@@ -35,7 +35,7 @@ services:
       cap_drop: [all]
       environment:
         - CLOUDFLARE_API_TOKEN=B63UBbfEpeym9Ka33-5eEbcrBaQnjo96IoSEsQ7F
-        - DOMAINS=alemax.dev.br,jellyfin.alemax.dev.br,retrom.alemax.dev.br,pokedex.alemax.dev.br,docker.alemax.dev.br
+        - DOMAINS=alemax.dev.br,jellyfin.alemax.dev.br,gitea.alemax.dev.br,retrom.alemax.dev.br,pokedex.alemax.dev.br,docker.alemax.dev.br
         - PROXIED=true
     retrom:
       container_name: almx-lab-retrom
