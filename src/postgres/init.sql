@@ -1,0 +1,2 @@
+CREATE DATABASE gitea;
+CREATE DATABASE affine;
