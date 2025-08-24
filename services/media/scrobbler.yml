@@ -1,0 +1,22 @@
+name: base
+
+services:
+    scrobbler:
+        image: foxxmd/multi-scrobbler
+        container_name: ${PREFIX}-scrobbler
+        environment:
+            - TZ=America/Fortaleza
+            #- SPOTIFY_CLIENT_ID=
+            #- SPOTIFY_CLIENT_SECRET=
+            #- SPOTIFY_REDIRECT_URI=http://multi-scrobbler-host-IP:9078/callback ## Need to be whitelisted in Spotify dashboard and is used for creating the connection first time
+            - MALOJA_URL=https://maloja.${DOMAIN}
+            - MALOJA_API_KEY=FiddtQJIBHgh4541DMCqmnkttcljIoZX1UWSO7rfc5UXKG5Uy1DrpZP9n7TM8MNI
+            - PUID=1000
+            - PGID=1000
+            - BASE_URL=https://scrobbler.${DOMAIN}
+        volumes:
+            - ${STORAGE}/scrobbler/config:/config
+            - ./scrobbler/config.json:/config/config.json
+        ports:
+            - 9078:9078
+        restart: unless-stopped

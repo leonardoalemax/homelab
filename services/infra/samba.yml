@@ -1,0 +1,13 @@
+name: base
+
+services:
+    samba:
+        container_name: ${PREFIX}-samba
+        image: crazymax/samba
+        network_mode: host
+        volumes:
+            - ./samba:/data
+            - ${STORAGE}/:/samba/archive
+        environment:
+            - "BROWSABLE=yes"
+        restart: always

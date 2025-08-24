@@ -1,0 +1,15 @@
+name: base
+
+services:
+  filebrowser:
+    container_name: ${PREFIX}-filebrowser
+    image: hurlenko/filebrowser
+    user: "1000:1000"
+    ports:
+        - 4430:8080
+    volumes:
+        - ${STORAGE}:/data
+        - ${STORAGE}/filebrowser:/config
+    environment:
+        - FB_BASEURL=/filebrowser
+    restart: always

@@ -1,0 +1,17 @@
+name: base
+
+services:
+    nginx:
+        container_name: ${PREFIX}-nginx-proxy-server
+        image: nginx:latest
+        restart: unless-stopped
+        environment:
+            SERVER_DOMAIN: ${DOMAIN}
+            SERVER_LOCAL_IP: ${SERVER_LOCAL_IP}
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ./nginx/templates:/etc/nginx/templates
+            - ./nginx/log.conf:/etc/nginx/log.conf
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf

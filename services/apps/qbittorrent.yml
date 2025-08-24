@@ -1,0 +1,18 @@
+name: base
+
+services:
+    qbittorrent:
+        container_name: ${PREFIX}-qbittorrent
+        image: linuxserver/qbittorrent:latest
+        restart: unless-stopped
+        environment:
+            - TZ=America/Sao_Paulo
+        ports:
+            - 8090:8080
+            - 6881:6881/tcp
+            - 6881:6881/udp
+        volumes:
+            - ${STORAGE}/torrents/config:/config
+            - ${STORAGE}/torrents/data:/data
+            - ${STORAGE}/torrents/downloads:/downloads:rw
+            - ${STORAGE}/torrents/incomplete:/incomplete

@@ -1,0 +1,16 @@
+name: base
+
+services:
+    maloja:
+        image: krateng/maloja
+        container_name: ${PREFIX}-maloja
+        environment:
+            MALOJA_SKIP_SETUP: true
+            MALOJA_DATA_DIRECTORY: /mljdata
+            PUID: 1000
+            PGID: 1000
+        volumes:
+            - ${STORAGE}/mljdata:/mljdata
+        ports:
+            - 42010:42010
+        restart: unless-stopped
