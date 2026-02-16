@@ -6,12 +6,8 @@ include:
     - ./services/infra/samba.yml
     - ./services/apps/qbittorrent.yml
     - ./services/infra/nginx.yml
-    # - ./services/infra/postgres.yml
-    # - ./services/infra/syncthing.yml
-    # - ./services/infra/filebrowser.yml
-    # - ./services/infra/cloudflare-ddns.yml
-    # - ./services/media/jellyfin.yml
-    # - ./services/media/maloja.yml
-    # - ./services/media/scrobbler.yml
-
-    # - ./services/apps/rdtclient.yml
+    - ./services/infra/syncthing.yml
+    - ./services/infra/postgres.yml
+    - ./services/media/jellyfin.yml
+    - ./services/apps/rdtclient.yml
+    - ./services/infra/filebrowser.yml
