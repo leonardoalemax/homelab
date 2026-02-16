@@ -1,7 +1,7 @@
 name: base
 
 include:
-    # - ./services/infra/cloudflare-ddns.yml
+    - ./services/infra/cloudflare-ddns.yml
     - ./services/infra/portainer.yml
     - ./services/infra/samba.yml
     - ./services/apps/qbittorrent.yml

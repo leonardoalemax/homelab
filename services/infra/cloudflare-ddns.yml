@@ -1,15 +1,15 @@
 name: base
 
 services:
-  cloudflare-ddns:
-    container_name: ${PREFIX}-cloudflare-ddns
-    image: favonia/cloudflare-ddns:latest
-    network_mode: host
-    restart: always
-    user: "1000:1000"
-    read_only: true
-    cap_drop: [all]
-    environment:
-      - CLOUDFLARE_API_TOKEN=B63UBbfEpeym9Ka33-5eEbcrBaQnjo96IoSEsQ7F
-      - DOMAINS=${DOMAIN},*.${DOMAIN}
-      - PROXIED=true
+    cloudflare-ddns:
+        container_name: ${PREFIX}-cloudflare-ddns
+        image: favonia/cloudflare-ddns:latest
+        network_mode: host
+        restart: always
+        user: "1000:1000"
+        read_only: true
+        cap_drop: [all]
+        environment:
+            - CLOUDFLARE_API_TOKEN=B63UBbfEpeym9Ka33-5eEbcrBaQnjo96IoSEsQ7F
+            - DOMAINS=${DOMAIN},*.${DOMAIN}
+            - PROXIED=true
