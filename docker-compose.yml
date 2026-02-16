@@ -2,15 +2,16 @@ name: base
 
 include:
     # - ./services/infra/cloudflare-ddns.yml
+    - ./services/infra/portainer.yml
     - ./services/infra/samba.yml
-    # - ./services/infra/nginx.yml
+    - ./services/apps/qbittorrent.yml
+    - ./services/infra/nginx.yml
     # - ./services/infra/postgres.yml
-    # - ./services/infra/portainer.yml
     # - ./services/infra/syncthing.yml
     # - ./services/infra/filebrowser.yml
     # - ./services/infra/cloudflare-ddns.yml
     # - ./services/media/jellyfin.yml
     # - ./services/media/maloja.yml
     # - ./services/media/scrobbler.yml
-    # - ./services/apps/qbittorrent.yml
+
     # - ./services/apps/rdtclient.yml
