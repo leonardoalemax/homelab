@@ -11,3 +11,4 @@ include:
     - ./services/media/jellyfin.yml
     - ./services/apps/rdtclient.yml
     - ./services/infra/filebrowser.yml
+    - ./apps/remotes/cfnview/.homelab/service.yml
