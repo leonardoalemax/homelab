@@ -1,3 +1,4 @@
+apps/remotes/*/
 scrobbler/config/logs/*
 services/infra/samba/cache/*
 services/infra/samba/lib/*
