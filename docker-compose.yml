@@ -12,3 +12,4 @@ include:
     - ./services/apps/rdtclient.yml
     - ./services/infra/filebrowser.yml
     - ./apps/remotes/cfnview/.homelab/service.yml
+    - ./apps/remotes/neo-shadaloo/.homelab/service.yml
