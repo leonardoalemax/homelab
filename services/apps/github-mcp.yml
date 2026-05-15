@@ -9,4 +9,4 @@ services:
         environment:
             - GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PERSONAL_ACCESS_TOKEN}
         ports:
-            - 8085:8080
+            - 8085:8082
