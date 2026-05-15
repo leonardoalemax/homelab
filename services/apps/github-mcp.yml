@@ -5,7 +5,7 @@ services:
         container_name: ${PREFIX}-github-mcp
         image: ghcr.io/github/github-mcp-server:latest
         restart: unless-stopped
-        command: ["--transport=sse"]
+        command: ["http"]
         environment:
             - GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PERSONAL_ACCESS_TOKEN}
         ports:
