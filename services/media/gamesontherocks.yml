@@ -1,0 +1,13 @@
+name: base
+
+services:
+    gamesontherocks:
+        container_name: ${PREFIX}-gamesontherocks
+        image: nginx:alpine
+        volumes:
+            # Pasta gerada pelo services/media/gamesontherocks/download.sh
+            # (index.html + episodes/*.mp3) servida como site estático.
+            - ${STORAGE}/gamesontherocks:/usr/share/nginx/html:ro
+        ports:
+            - 8077:80
+        restart: unless-stopped

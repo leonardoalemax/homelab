@@ -38,6 +38,8 @@ Arquivo de referência: [`.env.example`](.env.example)
 │   │   └── rdtclient.yml       # Real-Debrid client
 │   └── media/
 │       ├── jellyfin.yml        # Media server
+│       ├── gamesontherocks.yml # HTTP server (acervo do podcast Games On The Rocks)
+│       ├── gamesontherocks/    # download.sh (baixa episódios) + README
 │       ├── maloja.yml          # Scrobbling server (Last.fm alternativo)
 │       └── scrobbler.yml       # multi-scrobbler (agrega fontes → Maloja)
 └── apps/
@@ -60,6 +62,7 @@ Arquivo de referência: [`.env.example`](.env.example)
 | qbittorrent | linuxserver/qbittorrent | 8090, 6881 | Config/data/downloads em `$STORAGE/torrents/` |
 | rdtclient | rogerfar/rdtclient | 6500 | DB e downloads em `$STORAGE/rdt/` |
 | jellyfin | linuxserver/jellyfin | 8096, 8920, 7359, 1900 | Library em `$STORAGE/jellyfin/` |
+| gamesontherocks | nginx:alpine | 8077 | Serve `$STORAGE/gamesontherocks` (acervo do podcast); povoado por `download.sh` |
 | maloja | krateng/maloja | 42010 | Dados em `$STORAGE/mljdata` |
 | scrobbler | foxxmd/multi-scrobbler | 9078 | Agrega fontes e envia para Maloja |
 
@@ -67,7 +70,7 @@ Arquivo de referência: [`.env.example`](.env.example)
 
 Cada serviço exposto externamente tem um arquivo `.conf.template` em `services/infra/nginx/templates/`. As variáveis `${SERVER_DOMAIN}` e `${SERVER_LOCAL_IP}` são injetadas via env no container nginx.
 
-Templates existentes: `scrobbler`, `gitea`, `kavita`, `torrent`, `pokeapi`, `rdtclient`, `cfnview`.
+Templates existentes: `scrobbler`, `gitea`, `kavita`, `torrent`, `pokeapi`, `rdtclient`, `cfnview`, `gamesontherocks`.
 
 ## Apps remotos (`apps/remotes/`)
 

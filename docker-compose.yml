@@ -9,6 +9,7 @@ include:
     - ./services/infra/syncthing.yml
     - ./services/infra/postgres.yml
     - ./services/media/jellyfin.yml
+    - ./services/media/gamesontherocks.yml
     - ./services/apps/rdtclient.yml
     - ./services/apps/github-mcp.yml
     - ./services/infra/filebrowser.yml
