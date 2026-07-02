@@ -71,7 +71,30 @@ html_escape() {
     sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g'
 }
 
+# Quantos downloads simultâneos. archive.org limita cada conexão, então
+# baixar em paralelo acelera bastante. Ajuste com:  JOBS=8 ./download.sh
+JOBS="${JOBS:-5}"
+
+# Baixa uma linha "url<TAB>destino" da fila (usada via xargs em paralelo).
+dl_one() {
+    local line="$1" url dest name
+    url="${line%%$'\t'*}"
+    dest="${line#*$'\t'}"
+    name="$(basename "$dest")"
+    # -C - retoma downloads interrompidos; baixa para .part e só move ao concluir
+    if curl -fsSL --retry 3 --retry-delay 2 -C - -o "$dest.part" "$url"; then
+        mv -f "$dest.part" "$dest"
+        printf '  ok      %s\n' "$name"
+    else
+        printf '  FALHOU  %s\n' "$name" >&2
+        rm -f "$dest.part"
+    fi
+}
+export -f dl_one
+
 declare -a EP_TITLES EP_FILES
+TASKS="$(mktemp)"
+trap 'rm -f "$TASKS"' EXIT
 
 i=0
 for line in "${LINES[@]}"; do
@@ -90,19 +113,19 @@ for line in "${LINES[@]}"; do
     EP_FILES+=("$filename")
 
     if [[ -s "$dest" ]]; then
-        printf '[%3d/%d] skip  %s\n' "$i" "$TOTAL" "$filename"
+        printf '[%3d/%d] já existe  %s\n' "$i" "$TOTAL" "$filename"
         continue
     fi
-
-    printf '[%3d/%d] baixa %s\n' "$i" "$TOTAL" "$filename"
-    # -C - retoma downloads interrompidos; baixa para .part e só move ao concluir
-    if curl -fL --retry 3 --retry-delay 2 -C - -o "$dest.part" "$url"; then
-        mv -f "$dest.part" "$dest"
-    else
-        echo "    !! falhou: $url" >&2
-        rm -f "$dest.part"
-    fi
+    # enfileira para download paralelo:  url<TAB>destino
+    printf '%s\t%s\n' "$url" "$dest" >> "$TASKS"
 done
+
+PENDING="$(wc -l < "$TASKS" | tr -d ' ')"
+if [[ "$PENDING" -gt 0 ]]; then
+    echo
+    echo "==> baixando $PENDING episódios, $JOBS em paralelo (ajuste com JOBS=N)"
+    xargs -P "$JOBS" -a "$TASKS" -I{} bash -c 'dl_one "$@"' _ {}
+fi
 
 # ── Gera o index.html ────────────────────────────────────────────────────────
 echo
