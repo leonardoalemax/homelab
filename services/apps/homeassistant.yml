@@ -8,6 +8,7 @@ services:
             - TZ=America/Sao_Paulo
         volumes:
             - ${STORAGE}/homeassistant/config:/config
+            - ./homeassistant/configuration.yaml:/config/configuration.yaml:ro
         ports:
             - 8123:8123
         restart: unless-stopped
