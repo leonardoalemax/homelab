@@ -12,6 +12,7 @@ include:
     - ./services/media/gamesontherocks.yml
     - ./services/media/ps3netsrv.yml
     - ./services/apps/rdtclient.yml
+    - ./services/apps/homeassistant.yml
     - ./services/apps/github-mcp.yml
     - ./services/infra/filebrowser.yml
     - ./apps/remotes/cfnview/.homelab/service.yml
