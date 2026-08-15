@@ -1,6 +1,4 @@
 default_config:
 
-http:
-  use_x_forwarded_for: true
-  trusted_proxies:
-    - 172.18.0.0/16
+# Reverse proxy trust (use_x_forwarded_for / trusted_proxies) is no longer
+# configurable via YAML — set it in the UI: Settings > System > Network.

@@ -9,6 +9,5 @@ services:
         volumes:
             - ${STORAGE}/homeassistant/config:/config
             - ./homeassistant/configuration.yaml:/config/configuration.yaml:ro
-        ports:
-            - 8123:8123
+        network_mode: host
         restart: unless-stopped
