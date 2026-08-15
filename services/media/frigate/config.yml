@@ -1,0 +1,23 @@
+mqtt:
+    enabled: false
+
+detectors:
+    cpu1:
+        type: cpu
+
+# Add your cameras below, e.g.:
+#
+# cameras:
+#   frontdoor:
+#     ffmpeg:
+#       inputs:
+#         - path: rtsp://user:pass@192.168.0.50:554/stream1
+#           roles:
+#             - detect
+#             - record
+#     detect:
+#       width: 1280
+#       height: 720
+#     record:
+#       enabled: true
+cameras: {}

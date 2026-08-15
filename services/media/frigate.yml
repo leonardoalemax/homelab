@@ -1,0 +1,23 @@
+name: base
+
+services:
+    frigate:
+        image: ghcr.io/blakeblackshear/frigate:stable
+        container_name: ${PREFIX}-frigate
+        restart: unless-stopped
+        shm_size: "128mb"
+        environment:
+            - TZ=America/Sao_Paulo
+        volumes:
+            - ${STORAGE}/frigate/config:/config
+            - ./frigate/config.yml:/config/config.yml:ro
+            - ${STORAGE}/frigate/media:/media/frigate
+            - type: tmpfs
+              target: /tmp/cache
+              tmpfs:
+                  size: 536870912
+        ports:
+            - 8971:8971
+            - 8554:8554
+            - 8555:8555/tcp
+            - 8555:8555/udp

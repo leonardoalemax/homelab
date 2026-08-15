@@ -11,6 +11,7 @@ include:
     - ./services/media/jellyfin.yml
     - ./services/media/gamesontherocks.yml
     - ./services/media/ps3netsrv.yml
+    - ./services/media/frigate.yml
     - ./services/apps/rdtclient.yml
     - ./services/apps/homeassistant.yml
     - ./services/apps/github-mcp.yml
