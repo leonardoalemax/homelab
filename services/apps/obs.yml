@@ -2,18 +2,16 @@ name: base
 
 services:
     obs:
-        image: jlesage/obs-studio:latest
+        image: alexanderwagnerdev/obs:latest
         container_name: ${PREFIX}-obs
+        shm_size: "8gb"
         environment:
-            - USER_ID=1000
-            - GROUP_ID=1000
+            - VNC_PASS=${OBS_VNC_PASS}
             - TZ=America/Sao_Paulo
-            - WEB_AUDIO=1
         devices:
             - /dev/video0:/dev/video0
             - /dev/snd:/dev/snd
-        volumes:
-            - ${STORAGE}/obs/config:/config
         ports:
-            - 5800:5800
+            - 6080:6080
+            - 5900:5900
         restart: unless-stopped
