@@ -15,9 +15,6 @@ services:
               target: /tmp/cache
               tmpfs:
                   size: 536870912
-        devices:
-            - /dev/video0:/dev/video0 # Vídeo da Placa
-            - /dev/snd:/dev/snd # Áudio da Placa (ALSA)
         ports:
             - 5000:5000
             - 8971:8971

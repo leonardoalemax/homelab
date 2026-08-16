@@ -14,6 +14,7 @@ include:
     - ./services/media/frigate.yml
     - ./services/apps/rdtclient.yml
     - ./services/apps/homeassistant.yml
+    - ./services/apps/obs.yml
     - ./services/apps/github-mcp.yml
     - ./services/infra/filebrowser.yml
     - ./apps/remotes/cfnview/.homelab/service.yml

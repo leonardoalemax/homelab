@@ -1,0 +1,19 @@
+name: base
+
+services:
+    obs:
+        image: jlesage/obs-studio:latest
+        container_name: ${PREFIX}-obs
+        environment:
+            - USER_ID=1000
+            - GROUP_ID=1000
+            - TZ=America/Sao_Paulo
+            - WEB_AUDIO=1
+        devices:
+            - /dev/video0:/dev/video0
+            - /dev/snd:/dev/snd
+        volumes:
+            - ${STORAGE}/obs/config:/config
+        ports:
+            - 5800:5800
+        restart: unless-stopped
