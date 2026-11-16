@@ -11,7 +11,7 @@
 // Areas are a short hardcoded list rather than something discovered at
 // runtime -- add a line here when a new area gets its own index.json.
 const AREAS = [
-  { name: 'games', channel: 'Games', manifest: 'http://downloads/games/index.json' }
+  { name: 'games', channel: 'Playstation 3', manifest: 'http://downloads/games/index.json' }
 ];
 
 const CATEGORY_NAME = 'Valt';
@@ -21,17 +21,20 @@ const escapeHtml = (text) =>
   text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 // only p/strong/em/code/pre/a/span/img survive the server's message
-// sanitizer. `image` and `link` are plain text/anchors on purpose, not <img>
-// tags: the host's own link-preview job detects direct image URLs and bare
-// links independently of the sanitizer and renders them as embeds, which is
-// how the cover art and the download link end up shown without ever
-// uploading a file or fighting the sanitizer's <img> src allowlist
-const buildMessageHtml = ({ title, description, image, link }) =>
+// sanitizer. `image` is a plain <a> on purpose, not an <img> tag: the host's
+// own link-preview job detects direct image URLs independently of the
+// sanitizer and renders them as an embed, which is how the cover art shows
+// up without ever uploading a file or fighting the sanitizer's <img> src
+// allowlist. The visible text is a short label, not the raw URL -- the link
+// scanner reads the href either way, it doesn't care what the link says.
+// `link` (the actual download URL) is never shown as text here: it's not an
+// HTML page, so it has no real link-preview to speak of, and the "Download"
+// button from buildComponents is the only way to reach it anyway.
+const buildMessageHtml = ({ title, description, image }) =>
   [
     `<p><strong>${escapeHtml(title)}</strong></p>`,
     description ? `<p>${escapeHtml(description)}</p>` : '',
-    image ? `<p><a href="${image}" target="_blank">${image}</a></p>` : '',
-    link ? `<p><a href="${link}" target="_blank">${link}</a></p>` : ''
+    image ? `<p><a href="${image}" target="_blank">Capa</a></p>` : ''
   ]
     .filter(Boolean)
     .join('');
