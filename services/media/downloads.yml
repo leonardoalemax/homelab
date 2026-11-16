@@ -6,8 +6,10 @@ services:
         image: nginx:alpine
         volumes:
             # raiz genérica: cada "área" (games, e futuramente outras) vive aqui
-            # como uma subpasta, e os manifests JSON gerados ficam em _data/
-            - ${STORAGE}/downloads:/usr/share/nginx/html:ro
+            # como uma subpasta. NÃO pode ser :ro -- com :ro o Docker não
+            # consegue criar o diretório "games" (mountpoint do bind abaixo)
+            # dentro dela se ${STORAGE}/downloads ainda não existir no disco
+            - ${STORAGE}/downloads:/usr/share/nginx/html
             # área "games": reaproveita a pasta real já usada pelo ps3netsrv.yml,
             # sem duplicar nem mover nada
             - ${STORAGE}/Games:/usr/share/nginx/html/games:ro
