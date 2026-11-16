@@ -10,6 +10,8 @@ services:
             - ${STORAGE}/sharkord:/home/bun/.config/sharkord
             - ./sharkord/plugins/apps-feed:/home/bun/.config/sharkord/plugins/apps-feed
             - ./sharkord/content:/home/bun/.config/sharkord/content
+            - ./sharkord/plugins/games-feed:/home/bun/.config/sharkord/plugins/games-feed
+            - ./sharkord/games-content:/home/bun/.config/sharkord/games-content
         ports:
             - 4991:4991/tcp
             - 40000:40000/tcp

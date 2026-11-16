@@ -1,0 +1,12 @@
+name: base
+
+services:
+    gamefiles:
+        container_name: ${PREFIX}-gamefiles
+        image: nginx:alpine
+        volumes:
+            - ${STORAGE}/Games:/usr/share/nginx/html:ro
+            - ./gamefiles/default.conf:/etc/nginx/conf.d/default.conf:ro
+        ports:
+            - 8078:80
+        restart: unless-stopped
