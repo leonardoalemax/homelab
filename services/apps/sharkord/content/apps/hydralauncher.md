@@ -1,0 +1,6 @@
+---
+title: Hydra Launcher
+link: https://hydralauncher.gg
+image: images/hydralauncher.png
+description: Launcher de jogos open-source com torrent e Real-Debrid embutidos, achievements, save sync na nuvem, temas de interface e loja de keys.
+---

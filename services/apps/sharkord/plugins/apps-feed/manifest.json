@@ -1,0 +1,8 @@
+{
+  "id": "apps-feed",
+  "name": "Apps Feed",
+  "author": "alemax",
+  "description": "Posts app recommendations (title, link, description, image) from markdown files into a read-only feed channel.",
+  "sdkVersion": 2,
+  "version": "1.0.0"
+}
