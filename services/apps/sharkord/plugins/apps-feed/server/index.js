@@ -47,15 +47,10 @@ const escapeHtml = (text) =>
 // so the "card" is plain paragraphs rather than headings or lists.
 // `link` has to appear as real text (not just a button's props) because the
 // host's own link-preview job scans message content for URLs to unfurl --
-// this is what gets the site's thumbnail/OG image attached under the post.
-// `iconUrl` (set once the attached image is uploaded, see postEntry) reuses
-// the `emoji-image` class -- the only img class the sanitizer keeps -- so it
-// renders small and inline right next to the title instead of full size
-const buildMessageHtml = ({ title, description, link }, iconUrl) =>
+// this is what gets the site's thumbnail/OG image attached under the post
+const buildMessageHtml = ({ title, description, link }) =>
   [
-    `<p>${
-      iconUrl ? `<img src="${iconUrl}" alt="" class="emoji-image" /> ` : ''
-    }<strong>${escapeHtml(title)}</strong></p>`,
+    `<p><strong>${escapeHtml(title)}</strong></p>`,
     description ? `<p>${escapeHtml(description)}</p>` : '',
     link ? `<p><a href="${link}" target="_blank">${link}</a></p>` : ''
   ]
@@ -197,42 +192,9 @@ const loadEntries = async () => {
   return entries;
 };
 
-// the icon's served URL depends on the name the file manager gives the
-// upload, which we only learn after sending -- so this posts once without an
-// icon, then edits the message in to add it once the upload's URL is known
-const postEntry = async (ctx, channel, entry) => {
-  const files = [];
-
-  if (entry.image) {
-    try {
-      const data = await fs.readFile(path.join(CONTENT_DIR, entry.image));
-
-      files.push({ name: path.basename(entry.image), data });
-    } catch (error) {
-      ctx.logger.error(`Could not read image for ${entry.id}: ${error.message}`);
-    }
-  }
-
-  const { messageId } = await ctx.messages.send(
-    channel.id,
-    buildMessageHtml(entry, null),
-    { files, components: buildComponents(entry) }
-  );
-
-  if (files.length === 0) return messageId;
-
-  const saved = await ctx.messages.get(messageId);
-  const uploadedName = saved?.files?.[0]?.name;
-
-  if (uploadedName) {
-    const iconUrl = `/public/${encodeURIComponent(uploadedName)}`;
-
-    await ctx.messages.edit(messageId, buildMessageHtml(entry, iconUrl));
-  }
-
-  return messageId;
-};
-
+// `posted:${entry.id}` in storage is the one-message-per-app guarantee: this
+// check-then-send-then-mark is the only place a message gets created, so an
+// entry already marked here is never re-sent by a later /sync-apps
 const syncEntries = async (ctx) => {
   const entries = await loadEntries();
   const cache = { categories: new Map(), channels: new Map() };
@@ -252,7 +214,23 @@ const syncEntries = async (ctx) => {
       cache
     );
 
-    const messageId = await postEntry(ctx, channel, entry);
+    const files = [];
+
+    if (entry.image) {
+      try {
+        const data = await fs.readFile(path.join(CONTENT_DIR, entry.image));
+
+        files.push({ name: path.basename(entry.image), data });
+      } catch (error) {
+        ctx.logger.error(`Could not read image for ${entry.id}: ${error.message}`);
+      }
+    }
+
+    const { messageId } = await ctx.messages.send(
+      channel.id,
+      buildMessageHtml(entry),
+      { files, components: buildComponents(entry) }
+    );
 
     await ctx.storage.set(storageKey, { messageId, postedAt: Date.now() });
     posted++;
