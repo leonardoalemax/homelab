@@ -1,12 +1,19 @@
 // Generic downloads feed. Valtar knows nothing about "games" or any other
-// specific area -- it only understands the common manifest shape produced
-// by services/media/downloads/areas/*.sh. Area-specific formats, metadata
-// lookups and caching all live in those scripts, not here.
+// specific area -- it only understands one static JSON shape: `{ entries }`
+// where each entry has id/title/description/image/link/buttons. Producing
+// that JSON (today: a hand-maintained index.json sitting right next to the
+// files it describes) is entirely someone else's problem.
 //
 // `downloads` is the compose service name for services/media/downloads.yml,
 // resolved over the shared docker network (both containers declare
 // `name: base`), so this never depends on the public proxy being reachable.
-const INDEX_URL = 'http://downloads/_data/index.json';
+//
+// Areas are a short hardcoded list rather than something discovered at
+// runtime -- add a line here when a new area gets its own index.json.
+const AREAS = [
+  { name: 'games', channel: 'Games', manifest: 'http://downloads/games/index.json' }
+];
+
 const CATEGORY_NAME = 'Valt';
 const MAX_BUTTONS = 5;
 
@@ -92,25 +99,15 @@ const fetchJson = async (url) => {
 };
 
 const loadAreas = async (ctx) => {
-  let index;
-
-  try {
-    index = await fetchJson(INDEX_URL);
-  } catch (error) {
-    ctx.logger.error(`Could not load ${INDEX_URL}: ${error.message}`);
-
-    return [];
-  }
-
   const areas = [];
 
-  for (const area of index.areas ?? []) {
+  for (const area of AREAS) {
     try {
-      const manifest = await fetchJson(`http://downloads${area.manifest}`);
+      const manifest = await fetchJson(area.manifest);
 
       areas.push({
         name: area.name,
-        channelName: area.channel ?? manifest.channel ?? area.name,
+        channelName: area.channel,
         entries: manifest.entries ?? []
       });
     } catch (error) {
