@@ -16,7 +16,7 @@ services:
             # área "anime": mount físico fixo -- fica num disco separado de
             # ${STORAGE}, por isso o caminho é literal em vez de env var (menos
             # uma coisa pra esquecer de sincronizar no .env do servidor)
-            - /mnt/archive/Anime:/usr/share/nginx/html/anime:ro
+            - ${STORAGE}/Anime:/usr/share/nginx/html/anime:ro
             - ./downloads/default.conf:/etc/nginx/conf.d/default.conf:ro
         ports:
             - 8078:80
