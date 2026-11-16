@@ -13,6 +13,9 @@ services:
             # área "games": reaproveita a pasta real já usada pelo ps3netsrv.yml,
             # sem duplicar nem mover nada
             - ${STORAGE}/Games:/usr/share/nginx/html/games:ro
+            # área "anime": mount físico separado (${ARCHIVE_STORAGE}), diferente
+            # do ${STORAGE} usado por tudo mais
+            - ${ARCHIVE_STORAGE}/Anime:/usr/share/nginx/html/anime:ro
             - ./downloads/default.conf:/etc/nginx/conf.d/default.conf:ro
         ports:
             - 8078:80

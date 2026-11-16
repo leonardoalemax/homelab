@@ -11,7 +11,8 @@
 // Areas are a short hardcoded list rather than something discovered at
 // runtime -- add a line here when a new area gets its own index.json.
 const AREAS = [
-  { name: 'games', channel: 'Playstation 3', manifest: 'http://downloads/games/index.json' }
+  { name: 'games', channel: 'Playstation 3', manifest: 'http://downloads/games/index.json' },
+  { name: 'anime', channel: 'Animes', manifest: 'http://downloads/anime/index.json' }
 ];
 
 const CATEGORY_NAME = 'Valt';
