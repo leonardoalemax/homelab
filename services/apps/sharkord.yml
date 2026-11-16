@@ -9,7 +9,7 @@ services:
         volumes:
             - ${STORAGE}/sharkord:/home/bun/.config/sharkord
             - ./sharkord/plugins/apps-feed:/home/bun/.config/sharkord/plugins/apps-feed
-            - ./sharkord/content:/home/bun/.config/sharkord/content:ro
+            - ./sharkord/content:/home/bun/.config/sharkord/content
         ports:
             - 4991:4991/tcp
             - 40000:40000/tcp
