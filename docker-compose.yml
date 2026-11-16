@@ -10,7 +10,7 @@ include:
     - ./services/infra/postgres.yml
     - ./services/media/jellyfin.yml
     - ./services/media/gamesontherocks.yml
-    - ./services/media/gamefiles.yml
+    - ./services/media/downloads.yml
     - ./services/media/ps3netsrv.yml
     - ./services/media/frigate.yml
     - ./services/apps/rdtclient.yml

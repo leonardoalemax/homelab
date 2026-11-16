@@ -1,6 +1,6 @@
 server{
     listen 80;
-    server_name gamefiles.${SERVER_DOMAIN};
+    server_name downloads.${SERVER_DOMAIN};
 
     access_log /dev/stdout proxy;
     error_log stderr;

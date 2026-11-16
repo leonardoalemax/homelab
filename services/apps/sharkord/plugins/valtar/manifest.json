@@ -1,0 +1,8 @@
+{
+  "id": "valtar",
+  "name": "Valtar",
+  "author": "alemax",
+  "description": "Generic downloads feed: reads an area index + per-area JSON manifests served by the downloads HTTP server and posts them under the Valt category.",
+  "sdkVersion": 2,
+  "version": "1.0.0"
+}

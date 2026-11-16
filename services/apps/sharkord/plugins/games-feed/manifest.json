@@ -1,8 +1,0 @@
-{
-  "id": "games-feed",
-  "name": "Games Feed",
-  "author": "alemax",
-  "description": "Posts game downloads (title, link, description, buttons) from machine-generated markdown files into read-only feed channels.",
-  "sdkVersion": 2,
-  "version": "1.0.0"
-}
