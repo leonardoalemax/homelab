@@ -44,11 +44,15 @@ const escapeHtml = (text) =>
   text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 // only p/strong/em/code/pre/a/span/img survive the server's message sanitizer,
-// so the "card" is plain paragraphs rather than headings or lists
-const buildMessageHtml = ({ title, description }) =>
+// so the "card" is plain paragraphs rather than headings or lists.
+// `link` has to appear as real text (not just a button's props) because the
+// host's own link-preview job scans message content for URLs to unfurl --
+// this is what gets the site's thumbnail/OG image attached under the post
+const buildMessageHtml = ({ title, description, link }) =>
   [
     `<p><strong>${escapeHtml(title)}</strong></p>`,
-    description ? `<p>${escapeHtml(description)}</p>` : ''
+    description ? `<p>${escapeHtml(description)}</p>` : '',
+    link ? `<p><a href="${link}" target="_blank">${link}</a></p>` : ''
   ]
     .filter(Boolean)
     .join('');
@@ -253,6 +257,37 @@ const onLoad = (ctx) => {
       const { total, posted } = await syncEntries(ctx);
 
       return { message: `Synced. ${posted} new post(s) out of ${total} entries.` };
+    }
+  });
+
+  ctx.commands.register({
+    name: 'reset-apps',
+    description:
+      'Forget which entries were already posted (does not delete the old ' +
+      'messages) so the next /sync-apps re-posts everything from scratch',
+    requires: 'MANAGE_MESSAGES',
+    async executes() {
+      let cleared = 0;
+      let after;
+
+      while (true) {
+        const page = await ctx.storage.list({
+          prefix: 'posted:',
+          limit: 1000,
+          after
+        });
+
+        if (page.length === 0) break;
+
+        for (const { key } of page) {
+          await ctx.storage.delete(key);
+          cleared++;
+        }
+
+        after = page[page.length - 1].key;
+      }
+
+      return { message: `Cleared ${cleared} entries. Run /sync-apps to re-post.` };
     }
   });
 };
