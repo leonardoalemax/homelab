@@ -36,18 +36,51 @@ const escapeHtml = (text) =>
 
 // only p/strong/em/code/pre/a/span/img survive the server's message sanitizer,
 // so the "card" is plain paragraphs rather than headings or lists
-const buildMessageHtml = ({ title, link, description }) => {
-  const titleHtml = link
-    ? `<a href="${link}" target="_blank">${escapeHtml(title)}</a>`
-    : escapeHtml(title);
-
-  return [
-    `<p><strong>${titleHtml}</strong></p>`,
-    description ? `<p>${escapeHtml(description)}</p>` : '',
-    link ? `<p>${link}</p>` : ''
+const buildMessageHtml = ({ title, description }) =>
+  [
+    `<p><strong>${escapeHtml(title)}</strong></p>`,
+    description ? `<p>${escapeHtml(description)}</p>` : ''
   ]
     .filter(Boolean)
     .join('');
+
+const MAX_BUTTONS = 5;
+
+// frontmatter format: `buttons: Label=https://url|Other=https://url2`
+const parseButtons = (raw) => {
+  if (!raw) return [];
+
+  return raw
+    .split('|')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .slice(0, MAX_BUTTONS)
+    .map((part) => {
+      const idx = part.indexOf('=');
+
+      if (idx === -1) return null;
+
+      return {
+        name: 'linkButton',
+        props: {
+          label: part.slice(0, idx).trim(),
+          url: part.slice(idx + 1).trim()
+        }
+      };
+    })
+    .filter(Boolean);
+};
+
+// falls back to a single "Abrir" button off `link` when no `buttons` field
+// is set, so existing entries keep working without editing their frontmatter
+const buildComponents = (entry) => {
+  const parsed = parseButtons(entry.buttons);
+
+  if (parsed.length > 0) return parsed;
+
+  return entry.link
+    ? [{ name: 'linkButton', props: { label: 'Abrir', url: entry.link } }]
+    : [];
 };
 
 const ensureChannel = async (ctx) => {
@@ -68,9 +101,11 @@ const ensureChannel = async (ctx) => {
   });
 
   ctx.logger.info(
-    `Created #${CHANNEL_NAME} (id ${channel.id}). One-time manual step: in ` +
-      'channel settings, deny "Send Messages" for @everyone so only reactions ' +
-      'are possible there -- plugin posts bypass that check either way.'
+    `Created #${CHANNEL_NAME} (id ${channel.id}). Two one-time manual steps: ` +
+      '1) in channel settings, deny "Send Messages" for @everyone so only ' +
+      'reactions are possible there -- plugin posts bypass that check either ' +
+      'way; 2) in Settings > Roles, grant @everyone the USE_PLUGINS ' +
+      'permission, or the buttons on these posts will be invisible to members.'
   );
 
   return channel;
@@ -98,7 +133,8 @@ const loadEntries = async () => {
       title: meta.title || file.replace(/\.md$/, ''),
       link: meta.link,
       image: meta.image,
-      description: meta.description || body
+      description: meta.description || body,
+      buttons: meta.buttons
     });
   }
 
@@ -131,7 +167,7 @@ const syncEntries = async (ctx) => {
     const { messageId } = await ctx.messages.send(
       channel.id,
       buildMessageHtml(entry),
-      { files }
+      { files, components: buildComponents(entry) }
     );
 
     await ctx.storage.set(storageKey, { messageId, postedAt: Date.now() });
@@ -142,6 +178,12 @@ const syncEntries = async (ctx) => {
 };
 
 const onLoad = (ctx) => {
+  // required even though this plugin has no slot UI: it's what makes the
+  // host fetch client/index.js at all, which is where messageComponents
+  // (the buttons) are registered. Without this the button props arrive but
+  // nothing renders them.
+  ctx.ui.enable();
+
   syncEntries(ctx)
     .then(({ total, posted }) =>
       ctx.logger.info(`Apps Feed: ${posted} new post(s) out of ${total} entries.`)
