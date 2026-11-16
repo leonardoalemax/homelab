@@ -47,10 +47,15 @@ const escapeHtml = (text) =>
 // so the "card" is plain paragraphs rather than headings or lists.
 // `link` has to appear as real text (not just a button's props) because the
 // host's own link-preview job scans message content for URLs to unfurl --
-// this is what gets the site's thumbnail/OG image attached under the post
-const buildMessageHtml = ({ title, description, link }) =>
+// this is what gets the site's thumbnail/OG image attached under the post.
+// `iconUrl` (set once the attached image is uploaded, see postEntry) reuses
+// the `emoji-image` class -- the only img class the sanitizer keeps -- so it
+// renders small and inline right next to the title instead of full size
+const buildMessageHtml = ({ title, description, link }, iconUrl) =>
   [
-    `<p><strong>${escapeHtml(title)}</strong></p>`,
+    `<p>${
+      iconUrl ? `<img src="${iconUrl}" alt="" class="emoji-image" /> ` : ''
+    }<strong>${escapeHtml(title)}</strong></p>`,
     description ? `<p>${escapeHtml(description)}</p>` : '',
     link ? `<p><a href="${link}" target="_blank">${link}</a></p>` : ''
   ]
@@ -192,6 +197,42 @@ const loadEntries = async () => {
   return entries;
 };
 
+// the icon's served URL depends on the name the file manager gives the
+// upload, which we only learn after sending -- so this posts once without an
+// icon, then edits the message in to add it once the upload's URL is known
+const postEntry = async (ctx, channel, entry) => {
+  const files = [];
+
+  if (entry.image) {
+    try {
+      const data = await fs.readFile(path.join(CONTENT_DIR, entry.image));
+
+      files.push({ name: path.basename(entry.image), data });
+    } catch (error) {
+      ctx.logger.error(`Could not read image for ${entry.id}: ${error.message}`);
+    }
+  }
+
+  const { messageId } = await ctx.messages.send(
+    channel.id,
+    buildMessageHtml(entry, null),
+    { files, components: buildComponents(entry) }
+  );
+
+  if (files.length === 0) return messageId;
+
+  const saved = await ctx.messages.get(messageId);
+  const uploadedName = saved?.files?.[0]?.name;
+
+  if (uploadedName) {
+    const iconUrl = `/public/${encodeURIComponent(uploadedName)}`;
+
+    await ctx.messages.edit(messageId, buildMessageHtml(entry, iconUrl));
+  }
+
+  return messageId;
+};
+
 const syncEntries = async (ctx) => {
   const entries = await loadEntries();
   const cache = { categories: new Map(), channels: new Map() };
@@ -211,23 +252,7 @@ const syncEntries = async (ctx) => {
       cache
     );
 
-    const files = [];
-
-    if (entry.image) {
-      try {
-        const data = await fs.readFile(path.join(CONTENT_DIR, entry.image));
-
-        files.push({ name: path.basename(entry.image), data });
-      } catch (error) {
-        ctx.logger.error(`Could not read image for ${entry.id}: ${error.message}`);
-      }
-    }
-
-    const { messageId } = await ctx.messages.send(
-      channel.id,
-      buildMessageHtml(entry),
-      { files, components: buildComponents(entry) }
-    );
+    const messageId = await postEntry(ctx, channel, entry);
 
     await ctx.storage.set(storageKey, { messageId, postedAt: Date.now() });
     posted++;
@@ -267,7 +292,20 @@ const onLoad = (ctx) => {
       'messages) so the next /sync-apps re-posts everything from scratch',
     requires: 'MANAGE_MESSAGES',
     async executes() {
-      let cleared = 0;
+      const cleared = await clearPostedStorage(ctx);
+
+      return { message: `Cleared ${cleared} entries. Run /sync-apps to re-post.` };
+    }
+  });
+
+  ctx.commands.register({
+    name: 'wipe-apps',
+    description:
+      'Delete every message this plugin has posted and forget them, so the ' +
+      'next /sync-apps starts clean. Does not touch the channels/categories.',
+    requires: 'MANAGE_MESSAGES',
+    async executes() {
+      let deleted = 0;
       let after;
 
       while (true) {
@@ -279,17 +317,45 @@ const onLoad = (ctx) => {
 
         if (page.length === 0) break;
 
-        for (const { key } of page) {
+        for (const { key, value } of page) {
+          if (value?.messageId) {
+            await ctx.messages.delete(value.messageId).catch((error) =>
+              ctx.logger.error(
+                `Could not delete message ${value.messageId}: ${error.message}`
+              )
+            );
+            deleted++;
+          }
+
           await ctx.storage.delete(key);
-          cleared++;
         }
 
         after = page[page.length - 1].key;
       }
 
-      return { message: `Cleared ${cleared} entries. Run /sync-apps to re-post.` };
+      return { message: `Deleted ${deleted} post(s). Run /sync-apps to re-post.` };
     }
   });
+};
+
+const clearPostedStorage = async (ctx) => {
+  let cleared = 0;
+  let after;
+
+  while (true) {
+    const page = await ctx.storage.list({ prefix: 'posted:', limit: 1000, after });
+
+    if (page.length === 0) break;
+
+    for (const { key } of page) {
+      await ctx.storage.delete(key);
+      cleared++;
+    }
+
+    after = page[page.length - 1].key;
+  }
+
+  return cleared;
 };
 
 export { onLoad };
