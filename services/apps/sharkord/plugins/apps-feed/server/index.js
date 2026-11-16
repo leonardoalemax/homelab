@@ -181,7 +181,6 @@ const loadEntries = async () => {
           channelName: channelDir.name,
           title: meta.title || file.replace(/\.md$/, ''),
           link: meta.link,
-          image: meta.image,
           description: meta.description || body,
           buttons: meta.buttons
         });
@@ -214,22 +213,12 @@ const syncEntries = async (ctx) => {
       cache
     );
 
-    const files = [];
-
-    if (entry.image) {
-      try {
-        const data = await fs.readFile(path.join(CONTENT_DIR, entry.image));
-
-        files.push({ name: path.basename(entry.image), data });
-      } catch (error) {
-        ctx.logger.error(`Could not read image for ${entry.id}: ${error.message}`);
-      }
-    }
-
+    // no file upload here on purpose: the only image shown is the one the
+    // host's own link-preview job pulls from the site's OG tags
     const { messageId } = await ctx.messages.send(
       channel.id,
       buildMessageHtml(entry),
-      { files, components: buildComponents(entry) }
+      { components: buildComponents(entry) }
     );
 
     await ctx.storage.set(storageKey, { messageId, postedAt: Date.now() });
