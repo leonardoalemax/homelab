@@ -1,9 +1,18 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-const CHANNEL_NAME = 'apps-feed';
-const CATEGORY_NAME = 'Apps';
-const CONTENT_DIR = '/home/bun/.config/sharkord/content/apps';
+const CONTENT_DIR = '/home/bun/.config/sharkord/content';
+
+// top-level folders under CONTENT_DIR are categories, their subfolders are
+// channels, everything else (images, loose files) is ignored
+const RESERVED_DIRS = new Set(['images']);
+
+const titleCase = (slug) =>
+  slug
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(' ');
 
 // minimal "frontmatter" parser: a `---` block of `key: value` lines, then body
 const parseFrontmatter = (raw) => {
@@ -83,67 +92,105 @@ const buildComponents = (entry) => {
     : [];
 };
 
-const ensureChannel = async (ctx) => {
-  const channels = await ctx.channels.list();
-  const existing = channels.find((channel) => channel.name === CHANNEL_NAME);
-
-  if (existing) return existing;
+const ensureCategory = async (ctx, name, cache) => {
+  if (cache.categories.has(name)) return cache.categories.get(name);
 
   const categories = await ctx.categories.list();
   const category =
-    categories.find((entry) => entry.name === CATEGORY_NAME) ??
-    (await ctx.categories.create(CATEGORY_NAME));
+    categories.find((entry) => entry.name === name) ??
+    (await ctx.categories.create(name));
 
-  const channel = await ctx.channels.create({
-    name: CHANNEL_NAME,
-    type: 'TEXT',
-    categoryId: category.id
-  });
+  cache.categories.set(name, category);
 
-  ctx.logger.info(
-    `Created #${CHANNEL_NAME} (id ${channel.id}). Two one-time manual steps: ` +
-      '1) in channel settings, deny "Send Messages" for @everyone so only ' +
-      'reactions are possible there -- plugin posts bypass that check either ' +
-      'way; 2) in Settings > Roles, grant @everyone the USE_PLUGINS ' +
-      'permission, or the buttons on these posts will be invisible to members.'
+  return category;
+};
+
+const ensureChannel = async (ctx, categoryId, name, cache) => {
+  const cacheKey = `${categoryId}/${name}`;
+
+  if (cache.channels.has(cacheKey)) return cache.channels.get(cacheKey);
+
+  const channels = await ctx.channels.list();
+  const existing = channels.find(
+    (channel) => channel.categoryId === categoryId && channel.name === name
   );
+
+  const channel =
+    existing ??
+    (await ctx.channels.create({ name, type: 'TEXT', categoryId }));
+
+  if (!existing) {
+    ctx.logger.info(
+      `Created #${name} (id ${channel.id}). Two one-time manual steps: ` +
+        '1) in channel settings, deny "Send Messages" for @everyone so only ' +
+        'reactions are possible there -- plugin posts bypass that check ' +
+        'either way; 2) in Settings > Roles, grant @everyone the ' +
+        'USE_PLUGINS permission, or the buttons on these posts will be ' +
+        'invisible to members.'
+    );
+  }
+
+  cache.channels.set(cacheKey, channel);
 
   return channel;
 };
 
+// walks CONTENT_DIR two levels deep: <category>/<channel>/*.md. Anything
+// shallower or in RESERVED_DIRS is skipped, so content/images/*.png next to
+// the category folders stays out of the scan
 const loadEntries = async () => {
-  let files;
+  let categoryDirs;
 
   try {
-    files = await fs.readdir(CONTENT_DIR);
+    categoryDirs = await fs.readdir(CONTENT_DIR, { withFileTypes: true });
   } catch {
     return [];
   }
 
   const entries = [];
 
-  for (const file of files) {
-    if (!file.endsWith('.md')) continue;
+  for (const categoryDir of categoryDirs) {
+    if (!categoryDir.isDirectory() || RESERVED_DIRS.has(categoryDir.name)) {
+      continue;
+    }
 
-    const raw = await fs.readFile(path.join(CONTENT_DIR, file), 'utf-8');
-    const { meta, body } = parseFrontmatter(raw);
-
-    entries.push({
-      id: file,
-      title: meta.title || file.replace(/\.md$/, ''),
-      link: meta.link,
-      image: meta.image,
-      description: meta.description || body,
-      buttons: meta.buttons
+    const categoryPath = path.join(CONTENT_DIR, categoryDir.name);
+    const channelDirs = await fs.readdir(categoryPath, {
+      withFileTypes: true
     });
+
+    for (const channelDir of channelDirs) {
+      if (!channelDir.isDirectory()) continue;
+
+      const channelPath = path.join(categoryPath, channelDir.name);
+      const files = await fs.readdir(channelPath);
+
+      for (const file of files) {
+        if (!file.endsWith('.md')) continue;
+
+        const raw = await fs.readFile(path.join(channelPath, file), 'utf-8');
+        const { meta, body } = parseFrontmatter(raw);
+
+        entries.push({
+          id: `${categoryDir.name}/${channelDir.name}/${file}`,
+          categoryName: titleCase(categoryDir.name),
+          channelName: channelDir.name,
+          title: meta.title || file.replace(/\.md$/, ''),
+          link: meta.link,
+          image: meta.image,
+          description: meta.description || body,
+          buttons: meta.buttons
+        });
+      }
+    }
   }
 
   return entries;
 };
 
 const syncEntries = async (ctx) => {
-  const channel = await ensureChannel(ctx);
   const entries = await loadEntries();
+  const cache = { categories: new Map(), channels: new Map() };
 
   let posted = 0;
 
@@ -151,6 +198,14 @@ const syncEntries = async (ctx) => {
     const storageKey = `posted:${entry.id}`;
 
     if (await ctx.storage.get(storageKey)) continue;
+
+    const category = await ensureCategory(ctx, entry.categoryName, cache);
+    const channel = await ensureChannel(
+      ctx,
+      category.id,
+      entry.channelName,
+      cache
+    );
 
     const files = [];
 
