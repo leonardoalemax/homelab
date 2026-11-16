@@ -1,0 +1,15 @@
+name: base
+
+services:
+    sharkord:
+        image: sharkord/sharkord:latest
+        container_name: ${PREFIX}-sharkord
+        environment:
+            - TZ=America/Sao_Paulo
+        volumes:
+            - ${STORAGE}/sharkord:/home/bun/.config/sharkord
+        ports:
+            - 4991:4991/tcp
+            - 40000:40000/tcp
+            - 40000:40000/udp
+        restart: unless-stopped
